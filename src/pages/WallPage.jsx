@@ -118,6 +118,12 @@ export default function WallPage() {
     const handleOpenWish = (wish) => {
         if (isOwner) {
             playPopSound();
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f472b6', '#34d399', '#fbbf24', '#60a5fa']
+            });
             setSelectedWish(wish);
             setTriggerBalloons(prev => !prev);
 
