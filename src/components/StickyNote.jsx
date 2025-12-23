@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function StickyNote({ text, color = '#a7f3d0', sender, rotation = 0, onClick }) {
+export default function StickyNote({ text, color = '#a7f3d0', sender, rotation = 0, onClick, isNew = false }) {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -13,6 +13,13 @@ export default function StickyNote({ text, color = '#a7f3d0', sender, rotation =
             <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
                 <div className="w-4 h-4 rounded-full bg-gray-700 shadow-md" />
             </div>
+
+            {/* New/Unread Indicator - Red Dot */}
+            {isNew && (
+                <div className="absolute -top-1 -right-1 z-20">
+                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg" />
+                </div>
+            )}
 
             {/* Sticky Note */}
             <div
