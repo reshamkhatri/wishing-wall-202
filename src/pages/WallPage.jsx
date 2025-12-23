@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
-import { Share2, Plus, Sparkles, Heart } from 'lucide-react';
+import { Share2, Plus, Sparkles, Heart, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import StickyNote from '../components/StickyNote';
 import CreateWishModal from '../components/CreateWishModal';
 import ReadWishModal from '../components/ReadWishModal';
@@ -84,10 +85,28 @@ export default function WallPage() {
     };
 
     const handleOpenWish = (wish) => {
-        // Only owner can read wishes
         if (isOwner) {
             setSelectedWish(wish);
             setTriggerBalloons(prev => !prev);
+        }
+    };
+
+    const downloadWall = async () => {
+        const wallElement = document.getElementById('cork-board');
+        if (!wallElement) return;
+
+        try {
+            const canvas = await html2canvas(wallElement, {
+                backgroundColor: '#e5e7eb',
+                scale: 2
+            });
+
+            const link = document.createElement('a');
+            link.download = `my-wishing-wall-${new Date().getFullYear()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        } catch (error) {
+            console.error('Download failed:', error);
         }
     };
 
@@ -166,7 +185,7 @@ export default function WallPage() {
 
             {/* Cork Board */}
             <div className="max-w-7xl mx-auto">
-                <div className="relative bg-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 min-h-[500px] md:min-h-[600px] shadow-2xl overflow-hidden">
+                <div id="cork-board" className="relative bg-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 min-h-[500px] md:min-h-[600px] shadow-2xl overflow-hidden">
                     {/* Everyone sees sticky notes */}
                     {displayWishes.length > 0 ? (
                         displayWishes.map((wish, index) => {
