@@ -21,6 +21,17 @@ export default function WallPage() {
 
     const [selectedWish, setSelectedWish] = useState(null);
     const [triggerBalloons, setTriggerBalloons] = useState(false);
+    const [readWishes, setReadWishes] = useState(() => {
+        const saved = localStorage.getItem('readWishes');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    // Simple pop sound
+    const playPopSound = () => {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(e => console.log('Audio play failed', e)); // Catch interaction errors
+    };
 
     // TEMPORARY: Add 5 dummy sticky notes for testing
     const dummyWishes = [
@@ -86,8 +97,15 @@ export default function WallPage() {
 
     const handleOpenWish = (wish) => {
         if (isOwner) {
+            playPopSound();
             setSelectedWish(wish);
             setTriggerBalloons(prev => !prev);
+
+            if (!readWishes.includes(wish.id)) {
+                const newReadWishes = [...readWishes, wish.id];
+                setReadWishes(newReadWishes);
+                localStorage.setItem('readWishes', JSON.stringify(newReadWishes));
+            }
         }
     };
 
@@ -172,13 +190,23 @@ export default function WallPage() {
                             </div>
                         </div>
 
-                        <button
-                            onClick={handleCopyLink}
-                            className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-3 btn-primary rounded-xl transition-all duration-300 text-sm font-semibold"
-                        >
-                            <Share2 className="w-4 h-4" />
-                            {copied ? "Copied!" : "Share to your friend"}
-                        </button>
+                        <div className="flex gap-2 w-full md:w-auto">
+                            <button
+                                onClick={downloadWall}
+                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all duration-300 text-sm font-semibold border border-white/10"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span className="hidden sm:inline">Download</span>
+                            </button>
+
+                            <button
+                                onClick={handleCopyLink}
+                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 btn-primary rounded-xl transition-all duration-300 text-sm font-semibold"
+                            >
+                                <Share2 className="w-4 h-4" />
+                                {copied ? "Copied!" : "Share"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -206,6 +234,7 @@ export default function WallPage() {
                                         color={wish.color}
                                         sender={wish.sender}
                                         rotation={wish.rotation}
+                                        isNew={!readWishes.includes(wish.id)}
                                         onClick={() => handleOpenWish(wish)}
                                     />
                                 </div>
