@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
-import { Share2, Plus, Sparkles } from 'lucide-react';
+import { Share2, Plus, Sparkles, Heart } from 'lucide-react';
 import StickyNote from '../components/StickyNote';
 import CreateWishModal from '../components/CreateWishModal';
 import ReadWishModal from '../components/ReadWishModal';
@@ -113,49 +113,49 @@ export default function WallPage() {
     // Use dummy wishes for testing, or real wishes if they exist
     const displayWishes = wishes.length > 0 ? wishes : dummyWishes;
 
-    // Generate random positions for sticky notes
+    // Generate random positions for sticky notes (mobile-friendly)
     const getRandomPosition = (index) => {
         const positions = [
-            { top: '8%', left: '12%' },
-            { top: '5%', left: '35%' },
-            { top: '10%', left: '58%' },
-            { top: '25%', left: '8%' },
-            { top: '22%', left: '28%' },
-            { top: '28%', left: '48%' },
-            { top: '20%', left: '72%' },
-            { top: '45%', left: '15%' },
-            { top: '42%', left: '38%' },
-            { top: '48%', left: '62%' },
-            { top: '65%', left: '10%' },
-            { top: '68%', left: '32%' },
-            { top: '62%', left: '52%' },
-            { top: '70%', left: '75%' },
-            { top: '85%', left: '20%' },
-            { top: '82%', left: '45%' },
+            { top: '5%', left: '8%' },
+            { top: '8%', left: '45%' },
+            { top: '18%', left: '15%' },
+            { top: '20%', left: '60%' },
+            { top: '32%', left: '10%' },
+            { top: '35%', left: '52%' },
+            { top: '48%', left: '18%' },
+            { top: '50%', left: '58%' },
+            { top: '62%', left: '12%' },
+            { top: '65%', left: '55%' },
+            { top: '78%', left: '20%' },
+            { top: '80%', left: '50%' },
         ];
         return positions[index % positions.length];
     };
 
     return (
-        <div className="min-h-screen p-6 pb-32">
+        <div className="min-h-screen p-4 md:p-6 pb-32">
             <BalloonAnimation trigger={triggerBalloons} />
 
             {/* Header - Only show for owner */}
             {isOwner && (
-                <div className="max-w-7xl mx-auto mb-8">
-                    <div className="flex justify-between items-start">
+                <div className="max-w-7xl mx-auto mb-6 md:mb-8">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">
+                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">
                                 My Wishing Wall
                             </h1>
-                            <p className="text-sm text-gray-500 font-mono">
-                                ID: {wallId.slice(0, 8)}
-                            </p>
+                            <div className="flex items-center gap-3 text-sm text-gray-400">
+                                <span className="font-mono">ID: {wallId.slice(0, 8)}</span>
+                                <span className="flex items-center gap-1">
+                                    <Heart className="w-4 h-4 text-red-400 fill-red-400" />
+                                    <span className="font-semibold">{displayWishes.length} wishes</span>
+                                </span>
+                            </div>
                         </div>
 
                         <button
                             onClick={handleCopyLink}
-                            className="flex items-center gap-2 px-5 py-3 btn-primary rounded-xl transition-all duration-300 text-sm font-semibold"
+                            className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-3 btn-primary rounded-xl transition-all duration-300 text-sm font-semibold"
                         >
                             <Share2 className="w-4 h-4" />
                             {copied ? "Copied!" : "Share to your friend"}
@@ -166,7 +166,7 @@ export default function WallPage() {
 
             {/* Cork Board */}
             <div className="max-w-7xl mx-auto">
-                <div className="relative bg-gray-200 rounded-3xl p-8 min-h-[600px] shadow-2xl">
+                <div className="relative bg-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 min-h-[500px] md:min-h-[600px] shadow-2xl overflow-hidden">
                     {/* Everyone sees sticky notes */}
                     {displayWishes.length > 0 ? (
                         displayWishes.map((wish, index) => {
@@ -178,8 +178,8 @@ export default function WallPage() {
                                     style={{
                                         top: position.top,
                                         left: position.left,
-                                        width: '140px',
-                                        height: '140px'
+                                        width: '100px',  // Smaller for mobile
+                                        height: '100px'
                                     }}
                                 >
                                     <StickyNote
@@ -193,9 +193,9 @@ export default function WallPage() {
                             );
                         })
                     ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <p className="text-2xl font-hand text-gray-400 mb-2">No wishes yet! 🎈</p>
-                            <p className="text-gray-500">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                            <p className="text-xl md:text-2xl font-hand text-gray-400 mb-2 text-center">No wishes yet! 🎈</p>
+                            <p className="text-sm md:text-base text-gray-500 text-center">
                                 {isOwner ? "Share your link to start collecting wishes!" : "Be the first to add a wish!"}
                             </p>
                         </div>
@@ -205,18 +205,18 @@ export default function WallPage() {
 
             {/* Visitor CTA - Only show for non-owners */}
             {!isOwner && (
-                <div className="max-w-7xl mx-auto mt-8">
-                    <div className="glass-card rounded-3xl p-8 text-center">
-                        <Sparkles className="w-12 h-12 text-accent-green mx-auto mb-4" />
-                        <h3 className="text-2xl font-bold text-white mb-2">
+                <div className="max-w-7xl mx-auto mt-6 md:mt-8">
+                    <div className="glass-card rounded-2xl md:rounded-3xl p-6 md:p-8 text-center">
+                        <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-accent-green mx-auto mb-4" />
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
                             Want your own wishing wall?
                         </h3>
-                        <p className="text-gray-400 mb-6">
+                        <p className="text-sm md:text-base text-gray-400 mb-6">
                             Create your wall and collect wishes from friends!
                         </p>
                         <button
                             onClick={() => navigate('/signup')}
-                            className="btn-primary px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
+                            className="w-full md:w-auto btn-primary px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
                         >
                             Create Your Own Wishing Wall
                         </button>
@@ -228,9 +228,9 @@ export default function WallPage() {
             {!isOwner && (
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="fixed bottom-8 right-8 w-16 h-16 btn-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 z-40"
+                    className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 btn-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 z-40"
                 >
-                    <Plus className="w-8 h-8 text-white" strokeWidth={3} />
+                    <Plus className="w-7 h-7 md:w-8 md:h-8 text-white" strokeWidth={3} />
                 </button>
             )}
 
