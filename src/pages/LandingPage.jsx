@@ -1,10 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function LandingPage() {
     const navigate = useNavigate();
     const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const [loading, setLoading] = useState(true);
+
+    // Check if user is already logged in
+    useEffect(() => {
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (session) {
+                // User is logged in, find their wall
+                const { data: wallData } = await supabase
+                    .from('walls')
+                    .select('id')
+                    .eq('owner_id', session.user.id)
+                    .single();
+
+                if (wallData) {
+                    // Redirect to their wall
+                    navigate(`/${wallData.id}`);
+                    return;
+                }
+            }
+            setLoading(false);
+        }
+
+        checkSession();
+    }, [navigate]);
 
     // Real countdown to New Year 2026
     useEffect(() => {
@@ -27,6 +54,14 @@ export default function LandingPage() {
         const interval = setInterval(calculateCountdown, 1000);
         return () => clearInterval(interval);
     }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-green"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen px-4">
