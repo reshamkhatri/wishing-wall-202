@@ -26,11 +26,31 @@ export default function WallPage() {
         return saved ? JSON.parse(saved) : [];
     });
 
-    // Simple pop sound
+    // Synthesize pop sound using Web Audio API (no network needed)
     const playPopSound = () => {
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-        audio.volume = 0.5;
-        audio.play().catch(e => console.log('Audio play failed', e)); // Catch interaction errors
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.5, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+        } catch (e) {
+            console.error('Audio play failed', e);
+        }
     };
 
     // TEMPORARY: Add 5 dummy sticky notes for testing
@@ -172,6 +192,13 @@ export default function WallPage() {
     return (
         <div className="min-h-screen p-4 md:p-6 pb-32">
             <BalloonAnimation trigger={triggerBalloons} />
+
+            {/* In-App Browser Warning */}
+            {navigator.userAgent.includes('Instagram') || navigator.userAgent.includes('FBAN') ? (
+                <div className="bg-yellow-500/90 text-black px-4 py-2 text-center text-sm font-medium backdrop-blur-sm z-50 sticky top-0">
+                    ⚠️ For the best experience (sound & downloads), tap ••• and "Open in Chrome/Safari"
+                </div>
+            ) : null}
 
             {/* Header - Only show for owner */}
             {isOwner && (
