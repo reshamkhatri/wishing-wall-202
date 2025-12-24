@@ -27,7 +27,7 @@ export default function ReadWishModal({ wish, onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
             <div
                 className="bg-white p-8 rounded-2xl w-full max-w-lg shadow-2xl relative duration-200"
                 style={{ backgroundColor: wish.color }}

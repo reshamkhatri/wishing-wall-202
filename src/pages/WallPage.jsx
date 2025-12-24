@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
-import { Share2, Plus, Sparkles, Heart, Download } from 'lucide-react';
+import { Share2, Plus, Heart, Download, Home } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import StickyNote from '../components/StickyNote';
 import CreateWishModal from '../components/CreateWishModal';
 import ReadWishModal from '../components/ReadWishModal';
 import BalloonAnimation from '../components/BalloonAnimation';
+import StarryBackground from '../components/StarryBackground';
+import Lantern from '../components/Lantern';
 
 export default function WallPage() {
     const { wallId } = useParams();
@@ -26,11 +28,10 @@ export default function WallPage() {
         return saved ? JSON.parse(saved) : [];
     });
 
-    // Synthesize pop sound using Web Audio API (no network needed)
-    // Real pop sound (Base64 encoded)
+    // Synthesize pop sound using Web Audio API
     const playPopSound = () => {
         try {
-            const audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTSVMAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UwaAAACExuYgAAAAC5iAAAAELmIAAAAAuYg==");
+            const audio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTSVMAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+UwaAAACExuYgAAAAC5iAAAAELmIAAAAAuYg==");
             audio.volume = 0.6;
             audio.play().catch(e => console.log('Audio error (interaction needed):', e));
         } catch (e) {
@@ -39,13 +40,13 @@ export default function WallPage() {
     };
 
     // TEMPORARY: Add 5 dummy sticky notes for testing
-    const dummyWishes = [
+    const dummyWishes = useMemo(() => [
         { id: '1', text: 'Happy New Year! May 2026 bring you joy!', sender: 'John', color: '#fecaca', rotation: -3 },
         { id: '2', text: 'Wishing you success in everything!', sender: 'Sarah', color: '#fef08a', rotation: 2 },
         { id: '3', text: 'Hope all your dreams come true!', sender: 'Mike', color: '#a7f3d0', rotation: -5 },
         { id: '4', text: 'Best wishes for the new year!', sender: 'Emma', color: '#fecaca', rotation: 4 },
         { id: '5', text: 'May this year be amazing!', sender: 'Alex', color: '#a7f3d0', rotation: -2 },
-    ];
+    ], []);
 
     useEffect(() => {
         if (!wallId) return;
@@ -106,11 +107,13 @@ export default function WallPage() {
 
             try {
                 playPopSound();
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#f472b6', '#34d399', '#fbbf24', '#60a5fa']
+                import('canvas-confetti').then((confetti) => {
+                    confetti.default({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#f472b6', '#34d399', '#fbbf24', '#60a5fa']
+                    });
                 });
             } catch (e) {
                 console.log('Effect error:', e);
@@ -132,8 +135,10 @@ export default function WallPage() {
 
         try {
             const canvas = await html2canvas(wallElement, {
-                backgroundColor: '#e5e7eb',
-                scale: 2
+                backgroundColor: '#1e1b4b', // Dark background for capture
+                scale: 2,
+                logging: false,
+                useCORS: true
             });
 
             const link = document.createElement('a');
@@ -145,112 +150,172 @@ export default function WallPage() {
         }
     };
 
+    // Memoize lanterns
+    const lanterns = useMemo(() => [...Array(10)].map((_, i) => ({
+        id: i,
+        delay: Math.random() * 20,
+        duration: Math.random() * 10 + 15,
+        x: Math.random() * 100, // percentage
+        scale: Math.random() * 0.5 + 0.5
+    })), []);
+
     if (loading || authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-green"></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#0a0a2a]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-400"></div>
             </div>
         );
     }
 
     if (!wall) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center text-white px-4">
+            <div className="min-h-screen flex flex-col items-center justify-center text-white px-4 bg-[#0a0a2a]">
                 <h2 className="text-4xl font-bold mb-4">Wall Not Found 😢</h2>
-                <p className="text-gray-400">This wishing wall doesn't exist.</p>
+                <p className="text-gray-400 mb-8">This wishing wall doesn't exist.</p>
+                <button
+                    onClick={() => navigate('/')}
+                    className="px-6 py-3 bg-white/10 rounded-xl hover:bg-white/20 transition-colors"
+                >
+                    Go Home
+                </button>
             </div>
         );
     }
 
     const isOwner = user?.id === wall.owner_id;
+    const isVisitor = !isOwner;
 
-    // Use dummy wishes for testing, or real wishes if they exist
-    const displayWishes = wishes.length > 0 ? wishes : dummyWishes;
+    // Logic: 
+    // - If Owner: Show real wishes. If empty, show dummy wishes (Demo Mode).
+    // - If Visitor: Show real wishes ONLY. If empty, show nothing (so they can add start).
+    const finalDisplayWishes = wishes.length > 0 ? wishes : (isOwner ? dummyWishes : []);
 
-    // Generate random positions for sticky notes (mobile-friendly)
+    // Generate random positions (mobile-friendly)
     const getRandomPosition = (index) => {
         const positions = [
-            { top: '5%', left: '8%' },
-            { top: '8%', left: '45%' },
-            { top: '18%', left: '15%' },
-            { top: '20%', left: '60%' },
-            { top: '32%', left: '10%' },
-            { top: '35%', left: '52%' },
-            { top: '48%', left: '18%' },
-            { top: '50%', left: '58%' },
-            { top: '62%', left: '12%' },
-            { top: '65%', left: '55%' },
-            { top: '78%', left: '20%' },
-            { top: '80%', left: '50%' },
+            { top: '10%', left: '10%' },
+            { top: '15%', left: '40%' },
+            { top: '12%', left: '70%' },
+            { top: '35%', left: '15%' },
+            { top: '30%', left: '55%' },
+            { top: '40%', left: '80%' },
+            { top: '60%', left: '20%' },
+            { top: '55%', left: '60%' },
+            { top: '65%', left: '85%' },
+            { top: '80%', left: '30%' },
+            { top: '75%', left: '70%' },
         ];
         return positions[index % positions.length];
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-6 pb-32">
+        <div className="relative min-h-screen overflow-hidden text-white selection:bg-amber-500/30 font-inter">
+            <StarryBackground />
+
+            {lanterns.map((l) => (
+                <Lantern key={l.id} {...l} />
+            ))}
+
             <BalloonAnimation trigger={triggerBalloons} />
 
             {/* In-App Browser Warning */}
             {navigator.userAgent.includes('Instagram') || navigator.userAgent.includes('FBAN') ? (
-                <div className="bg-yellow-500/90 text-black px-4 py-2 text-center text-sm font-medium backdrop-blur-sm z-50 sticky top-0">
-                    ⚠️ For the best experience (sound & downloads), tap ••• and "Open in Chrome/Safari"
+                <div className="bg-amber-500/90 text-black px-4 py-2 text-center text-sm font-medium backdrop-blur-sm z-50 sticky top-0">
+                    ⚠️ For best experience, open in Chrome/Safari
                 </div>
             ) : null}
 
-            {/* Header - Only show for owner */}
-            {isOwner && (
-                <div className="max-w-7xl mx-auto mb-6 md:mb-8">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            {/* Navbar / Header */}
+            <div className="relative z-20 px-4 py-6 md:px-8 max-w-7xl mx-auto flex items-center justify-between">
+                <div>
+                    {isVisitor ? (
+                        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Wishing Wall</h1>
+                    ) : (
                         <div>
-                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">
-                                My Wishing Wall
-                            </h1>
-                            <div className="flex items-center gap-3 text-sm text-gray-400">
-                                <span className="font-mono">ID: {wallId.slice(0, 8)}</span>
+                            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">My Wishing Wall</h1>
+                            <div className="flex items-center gap-3 text-xs md:text-sm text-purple-200/60 mt-1">
+                                <span className="font-mono bg-white/5 px-2 py-0.5 rounded">ID: {wallId.slice(0, 8)}</span>
                                 <span className="flex items-center gap-1">
-                                    <Heart className="w-4 h-4 text-red-400 fill-red-400" />
-                                    <span className="font-semibold">{displayWishes.length} wishes</span>
+                                    <Heart className="w-3 h-3 text-pink-400 fill-pink-400" />
+                                    <span>{wishes.length} wishes</span>
                                 </span>
                             </div>
                         </div>
+                    )}
+                </div>
 
-                        <div className="flex gap-2 w-full md:w-auto">
+                <div className="flex gap-3">
+                    {/* Home Button for everyone */}
+                    <button
+                        onClick={() => navigate('/')}
+                        className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-white/80"
+                        title="Go Home"
+                    >
+                        <Home className="w-5 h-5" />
+                    </button>
+
+                    {/* Owner Actions */}
+                    {isOwner && (
+                        <>
                             <button
                                 onClick={downloadWall}
-                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all duration-300 text-sm font-semibold border border-white/10"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-sm font-medium border border-white/10"
                             >
                                 <Download className="w-4 h-4" />
                                 <span className="hidden sm:inline">Download</span>
                             </button>
-
                             <button
                                 onClick={handleCopyLink}
-                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 btn-primary rounded-xl transition-all duration-300 text-sm font-semibold"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600/90 hover:bg-emerald-500/90 rounded-xl transition-all shadow-lg shadow-emerald-900/20 text-sm font-medium"
                             >
                                 <Share2 className="w-4 h-4" />
-                                {copied ? "Copied!" : "Share"}
+                                <span className="hidden sm:inline">{copied ? "Copied!" : "Share Link"}</span>
                             </button>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
-            )}
+            </div>
 
-            {/* Cork Board */}
-            <div className="max-w-7xl mx-auto">
-                <div id="cork-board" className="relative bg-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 min-h-[500px] md:min-h-[600px] shadow-2xl overflow-hidden">
-                    {/* Everyone sees sticky notes */}
-                    {displayWishes.length > 0 ? (
-                        displayWishes.map((wish, index) => {
+            {/* Main Wall Content */}
+            <div className="relative z-10 max-w-7xl mx-auto px-4 pb-20">
+                <div
+                    id="cork-board"
+                    className="relative bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 min-h-[600px] md:min-h-[700px] shadow-2xl overflow-hidden mt-4"
+                >
+                    {/* Add Wish CTA Center - VISITOR ONLY */}
+                    {isVisitor && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 z-0 pointer-events-none">
+                            <div className="pointer-events-auto text-center">
+                                <p className="text-xl md:text-2xl font-light text-white/80 mb-6 font-kalam tracking-wide">
+                                    Every big year starts with a small wish.
+                                </p>
+                                <button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="group relative overflow-hidden rounded-xl p-[1px] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.4)]"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 animate-gradient-x" />
+                                    <div className="relative px-8 py-4 bg-[#0a0a20] rounded-xl flex items-center justify-center gap-2 group-hover:bg-transparent transition-colors duration-300">
+                                        <Plus className="w-5 h-5 text-emerald-400 group-hover:text-white" />
+                                        <span className="font-semibold text-white tracking-wide">Add a wish</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Sticky Notes */}
+                    <div className="relative w-full h-full min-h-[600px]">
+                        {finalDisplayWishes.map((wish, index) => {
                             const position = getRandomPosition(index);
                             return (
                                 <div
                                     key={wish.id}
-                                    className="absolute"
+                                    className="absolute transition-transform hover:z-50"
                                     style={{
                                         top: position.top,
                                         left: position.left,
-                                        width: '100px',  // Smaller for mobile
-                                        height: '100px'
+                                        width: '140px',
+                                        height: '140px'
                                     }}
                                 >
                                     <StickyNote
@@ -263,48 +328,18 @@ export default function WallPage() {
                                     />
                                 </div>
                             );
-                        })
-                    ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                            <p className="text-xl md:text-2xl font-hand text-gray-400 mb-2 text-center">No wishes yet! 🎈</p>
-                            <p className="text-sm md:text-base text-gray-500 text-center">
-                                {isOwner ? "Share your link to start collecting wishes!" : "Be the first to add a wish!"}
-                            </p>
-                        </div>
-                    )}
-                </div>
-            </div>
+                        })}
 
-            {/* Visitor CTA - Only show for non-owners */}
-            {!isOwner && (
-                <div className="max-w-7xl mx-auto mt-6 md:mt-8">
-                    <div className="glass-card rounded-2xl md:rounded-3xl p-6 md:p-8 text-center">
-                        <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-accent-green mx-auto mb-4" />
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-                            Want your own wishing wall?
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-400 mb-6">
-                            Create your wall and collect wishes from friends!
-                        </p>
-                        <button
-                            onClick={() => navigate('/signup')}
-                            className="w-full md:w-auto btn-primary px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
-                        >
-                            Create Your Own Wishing Wall
-                        </button>
+                        {/* Empty State for Owner */}
+                        {isOwner && finalDisplayWishes.length === 0 && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none text-center p-6">
+                                <p className="text-lg">No wishes yet! 🎈</p>
+                                <p className="text-sm mt-2 opacity-60">Share your link to start collecting wishes.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
-            )}
-
-            {/* FAB - Only visible for visitors */}
-            {!isOwner && (
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 btn-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 z-40"
-                >
-                    <Plus className="w-7 h-7 md:w-8 md:h-8 text-white" strokeWidth={3} />
-                </button>
-            )}
+            </div>
 
             {/* Modals */}
             <CreateWishModal

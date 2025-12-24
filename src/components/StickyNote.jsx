@@ -27,8 +27,8 @@ export default function StickyNote({ text, color = '#a7f3d0', sender, rotation =
                 style={{
                     backgroundColor: color,
                     transform: `rotate(${rotation}deg)`,
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(0, 0, 0, 0.05)'
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
             >
                 {/* Empty - just colored square */}

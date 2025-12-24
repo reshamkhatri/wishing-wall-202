@@ -7,7 +7,9 @@ const COLORS = [
     '#e0ffff', // Light Cyan
     '#f0fff0', // Honeydew
     '#fffacd', // Lemon Chiffon
-    '#e6e6fa'  // Lavender
+    '#e6e6fa', // Lavender
+    '#ffe4e1', // Misty Rose
+    '#f0f8ff'  // Alice Blue
 ];
 
 export default function CreateWishModal({ isOpen, onClose, wallId }) {
@@ -46,73 +48,101 @@ export default function CreateWishModal({ isOpen, onClose, wallId }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity">
+            <div className="relative w-full max-w-md overflow-hidden rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200">
 
-                {/* Header */}
-                <div className="p-4 border-b flex justify-between items-center bg-gray-50">
-                    <h3 className="text-lg font-bold text-gray-800">Post a Wish</h3>
-                    <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded-full transition-colors">
-                        <X className="w-5 h-5 text-gray-500" />
-                    </button>
-                </div>
+                {/* Glass Background */}
+                <div className="absolute inset-0 bg-[#0a0a20]/90 backdrop-blur-xl border border-white/10" />
 
-                <form onSubmit={handleSubmit} className="p-6">
+                {/* Content */}
+                <div className="relative p-0 flex flex-col max-h-[90vh]">
 
-                    {/* Note Preview / Input Area */}
-                    <div
-                        className="w-full aspect-[4/3] p-6 mb-6 rounded-lg shadow-inner transition-colors duration-300 relative group"
-                        style={{ backgroundColor: selectedColor }}
-                    >
-                        <textarea
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                            placeholder="Type your wish here..."
-                            className="w-full h-full bg-transparent border-none resize-none focus:ring-0 text-xl font-hand placeholder-gray-400 text-gray-800 leading-snug"
-                            maxLength={200}
-                            autoFocus
-                        />
-                        <div className="absolute bottom-4 right-4 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {text.length}/200
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-6 border-b border-white/10">
+                        <h3 className="text-xl font-bold text-white tracking-wide">Make a Wish ✨</h3>
+                        <button
+                            onClick={onClose}
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
+
+                        {/* Note Preview */}
+                        <div className="mb-6">
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 ml-1">
+                                Your Note
+                            </label>
+                            <div
+                                className="w-full aspect-[4/3] p-6 rounded-xl shadow-lg transition-colors duration-300 relative group"
+                                style={{ backgroundColor: selectedColor }}
+                            >
+                                <textarea
+                                    value={text}
+                                    onChange={(e) => setText(e.target.value)}
+                                    placeholder="Type your wish here..."
+                                    className="w-full h-full bg-transparent border-none resize-none focus:ring-0 text-lg sm:text-xl font-hand placeholder-gray-500 text-gray-800 leading-snug"
+                                    maxLength={200}
+                                    autoFocus
+                                />
+                                <div className="absolute bottom-3 right-4 text-xs font-medium text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {text.length}/200
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Color Picker */}
-                    <div className="flex gap-3 mb-6 justify-center">
-                        {COLORS.map(color => (
-                            <button
-                                key={color}
-                                type="button"
-                                onClick={() => setSelectedColor(color)}
-                                className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${selectedColor === color ? 'border-gray-800 scale-110' : 'border-transparent'}`}
-                                style={{ backgroundColor: color }}
+                        {/* Color Picker */}
+                        <div className="mb-6">
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 ml-1">
+                                Pick a Color
+                            </label>
+                            <div className="flex flex-wrap gap-3 justify-center bg-white/5 p-3 rounded-2xl border border-white/5">
+                                {COLORS.map(color => (
+                                    <button
+                                        key={color}
+                                        type="button"
+                                        onClick={() => setSelectedColor(color)}
+                                        className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 shadow-sm ${selectedColor === color ? 'border-indigo-400 scale-110 ring-2 ring-indigo-400/30' : 'border-transparent'}`}
+                                        style={{ backgroundColor: color }}
+                                        title={color}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Sender Name */}
+                        <div className="mb-8">
+                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 ml-1">
+                                From (Optional)
+                            </label>
+                            <input
+                                type="text"
+                                value={sender}
+                                onChange={(e) => setSender(e.target.value)}
+                                placeholder="Your Name"
+                                className="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all font-medium"
+                                maxLength={30}
                             />
-                        ))}
-                    </div>
+                        </div>
 
-                    {/* Sender Name */}
-                    <input
-                        type="text"
-                        value={sender}
-                        onChange={(e) => setSender(e.target.value)}
-                        placeholder="Your Name (Optional)"
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-neon-cyan focus:border-transparent mb-6 text-gray-600 bg-gray-50"
-                        maxLength={30}
-                    />
-
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={submitting || !text.trim()}
-                        className="w-full flex items-center justify-center gap-2 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
-                    >
-                        {submitting ? "Posting..." : (
-                            <>
-                                Stick it! <Send className="w-4 h-4" />
-                            </>
-                        )}
-                    </button>
-                </form>
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={submitting || !text.trim()}
+                            className="w-full relative group overflow-hidden rounded-xl p-[1px]"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 opacity-80 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center gap-2 transition-transform active:scale-95">
+                                <span className="font-semibold text-white tracking-wide">
+                                    {submitting ? "Posting..." : "Stick on Wall"}
+                                </span>
+                                {!submitting && <Send className="w-4 h-4 text-white" />}
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
