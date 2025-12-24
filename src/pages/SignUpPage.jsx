@@ -8,6 +8,7 @@ import Lantern from '../components/Lantern';
 
 export default function SignUpPage() {
     const navigate = useNavigate();
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +17,10 @@ export default function SignUpPage() {
 
     const handleSignUp = async (e) => {
         e.preventDefault();
+        if (!name.trim()) {
+            setError('Please enter your name');
+            return;
+        }
         setLoading(true);
         setError(null);
 
@@ -28,10 +33,10 @@ export default function SignUpPage() {
 
             if (authError) throw authError;
 
-            // Create a wall for the user
+            // Create a wall for the user with personalized title
             const { data: wallData, error: wallError } = await supabase
                 .from('walls')
-                .insert([{ owner_id: authData.user.id, title: 'My Wishing Wall' }])
+                .insert([{ owner_id: authData.user.id, title: `${name}'s Wishing Wall` }])
                 .select()
                 .single();
 
@@ -94,6 +99,21 @@ export default function SignUpPage() {
                             </div>
 
                             <form onSubmit={handleSignUp} className="space-y-5">
+                                {/* Name */}
+                                <div className="space-y-1.5">
+                                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider ml-1">
+                                        Full Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Enter your name"
+                                        required
+                                        className="w-full px-4 py-3.5 bg-[#0a0a20]/60 border border-white/5 rounded-xl text-white placeholder-gray-500/80 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all shadow-inner"
+                                    />
+                                </div>
+
                                 {/* Email */}
                                 <div className="space-y-1.5">
                                     <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider ml-1">

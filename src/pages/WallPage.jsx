@@ -229,10 +229,10 @@ export default function WallPage() {
             <div className="relative z-20 px-4 py-6 md:px-8 max-w-7xl mx-auto flex items-center justify-between">
                 <div>
                     {isVisitor ? (
-                        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Wishing Wall</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{wall.title || "Wishing Wall"}</h1>
                     ) : (
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">My Wishing Wall</h1>
+                            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{wall.title || "My Wishing Wall"}</h1>
                             <div className="flex items-center gap-3 text-xs md:text-sm text-purple-200/60 mt-1">
                                 <span className="font-mono bg-white/5 px-2 py-0.5 rounded">ID: {wallId.slice(0, 8)}</span>
                                 <span className="flex items-center gap-1">
